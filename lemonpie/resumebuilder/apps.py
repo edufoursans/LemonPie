@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class ResumebuilderConfig(AppConfig):
+class ResumeBuilderConfig(AppConfig):
     name = 'resumebuilder'
