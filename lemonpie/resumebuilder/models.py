@@ -31,7 +31,7 @@ class ActivityEntry(CVEntry):
     date_end = models.DateField(blank=True, default=date.today)
     description = models.TextField(blank=True)
 
-class PersonalEntry(ActivityEntry):
+class PersonalEntry(CVEntry):
     family_name = models.CharField(max_length=50)
     given_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=50)
@@ -46,7 +46,7 @@ class EducationEntry(ActivityEntry):
     diploma_title = models.CharField(max_length=50)
     school_name = models.CharField(max_length=50)
 
-class SkillEntry(ActivityEntry):
+class SkillEntry(CVEntry):
     SKILL_LEVEL_CHOICES = (
       (1, 1),
       (2, 2),
