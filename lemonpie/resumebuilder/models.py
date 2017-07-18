@@ -1,6 +1,9 @@
 from datetime import date
 from django.contrib.auth.models import User
 from django.db import models
+
+from django_countries.fields import CountryField
+from phonenumber_field.modelfields import PhoneNumberField
 from polymorphic.models import PolymorphicModel
 
 # Create your models here.
@@ -26,7 +29,7 @@ class GroupEntry(CVEntry):
 
 class ActivityEntry(CVEntry):
     location_city = models.CharField(blank=True, max_length=50)
-    location_country = models.CharField(blank=True, max_length=50)
+    location_country = CountryField()
     date_begin = models.DateField(blank=True)
     date_end = models.DateField(blank=True, default=date.today)
     description = models.TextField(blank=True)
@@ -34,8 +37,7 @@ class ActivityEntry(CVEntry):
 class PersonalEntry(CVEntry):
     family_name = models.CharField(max_length=50)
     given_name = models.CharField(max_length=50)
-    phone_number = models.CharField(max_length=50)
-    ## Todo use django-phonenumber-field library
+    phone_number = PhoneNumberField()
     email_address = models.EmailField()
 
 class WorkEntry(ActivityEntry):
