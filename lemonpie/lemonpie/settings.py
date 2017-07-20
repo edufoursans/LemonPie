@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_countries',
+    'phonenumber_field',
     'polymorphic',
+    'resumebuilder.apps.ResumeBuilderConfig',
 ]
 
 MIDDLEWARE = [
