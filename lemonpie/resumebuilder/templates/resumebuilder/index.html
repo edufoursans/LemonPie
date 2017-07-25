@@ -1,0 +1,9 @@
+{% if cv_general_list %}
+    <ul>
+    {% for cv_general in cv_general_list %}
+        <li><a href="/resumebuilder/{{ cv_general.id }}/">{{ cv_general.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No CVs are available.</p>
+{% endif %}

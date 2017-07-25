@@ -1,0 +1,9 @@
+{% if cv_general %}
+<h1> {{cv_general.name}} </h1> by {{cv_general.user}} </br>
+{% for group_entry in cvgrouppairing %}
+      Group : {{ group_entry.group_entry.id }} </br>
+      {% for entrygrouppair in entrygrouppairing %}
+      CV Entry : {{ entrygrouppair.cv_entry.family_name }} </br>
+      {% endfor %}
+{% endfor %}
+{% endif %}
