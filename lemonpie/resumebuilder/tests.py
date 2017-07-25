@@ -12,7 +12,7 @@ from .models import (
   PersonalEntry,
   HobbyEntry,
   CVGeneralGroupEntryPairing,
-  CVEntryGroupEntryPairing
+  GroupEntryLinkedList
 )
 
 

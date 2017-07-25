@@ -70,14 +70,23 @@ class CVGeneralGroupEntryPairing(models.Model):
     cv_general = models.ForeignKey(CVGeneral, on_delete=models.CASCADE)
     group_entry = models.ForeignKey(GroupEntry, on_delete=models.CASCADE)
 
-class CVEntryGroupEntryPairing(models.Model):
-    cv_entry = models.ForeignKey(
-      CVEntry,
-      on_delete=models.CASCADE,
-      related_name='CVEntry'
+# Defining doubly linked-list of cv_entries:
+# Head of list is a group_entry, following elements are cv_entrys that belong to the group.
+class GroupEntryLinkedList(models.Model):
+    element = models.ForeignKey(
+        CVEntry,
+        on_delete=models.CASCADE,
+        related_name='element'
     )
-    group_entry = models.ForeignKey(
-      GroupEntry,
-      on_delete=models.CASCADE,
-      related_name='GroupEntry'
+    successor = models.ForeignKey(
+        'self',
+        related_name='successor01',
+        blank=True,
+        null=True,
+    )
+    predecessor = models.ForeignKey(
+        'self',
+        related_name='predecessor01',
+        blank=True,
+        null=True,
     )

@@ -11,7 +11,7 @@ from .models import (
   PersonalEntry,
   HobbyEntry,
   CVGeneralGroupEntryPairing,
-  CVEntryGroupEntryPairing
+  GroupEntryLinkedList
 )
 
 # Register your models here.
@@ -25,4 +25,4 @@ admin.site.register(SkillEntry)
 admin.site.register(PersonalEntry)
 admin.site.register(HobbyEntry)
 admin.site.register(CVGeneralGroupEntryPairing)
-admin.site.register(CVEntryGroupEntryPairing)
+admin.site.register(GroupEntryLinkedList)
