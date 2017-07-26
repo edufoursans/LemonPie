@@ -1,9 +1,15 @@
 {% if cv_general %}
 <h1> {{cv_general.name}} </h1> by {{cv_general.user}} </br>
 {% for key, list in entrygroupdict.items %}
-      Group : {{ key.id }} </br>
+      <h2> Group : {{ key.name }} </h2>
       {% for entry in list %}
         Element: {{ entry.name }} </br>
       {% endfor %}
 {% endfor %}
 {% endif %}
+
+<form action="{% url 'resumebuilder:modify_cv' cv_general.id %}" method="post">
+{% csrf_token %}
+<input type="text" name="cv_name" value="{{ cv_general.name }}" />
+<input type="submit" value="Modify" />
+</form>

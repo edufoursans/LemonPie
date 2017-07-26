@@ -1,7 +1,18 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.views import generic
 
 from .models import CVGeneral
 from .models import CVGeneralGroupEntryPairing
+
+
+class IndexView(generic.ListView):
+    template_name = 'resumebuilder/index.html'
+    context_object_name = 'cv_general_list'
+
+    def get_queryset(self):
+        return CVGeneral.objects.all()
 
 
 def list_of_entries_for_group(group_entry):
@@ -14,14 +25,6 @@ def list_of_entries_for_group(group_entry):
                 [head_of_group.successor.cv_entry]
             head_of_group = head_of_group.successor
     return entries_in_group
-
-
-def index(request):
-    all_cv_list = CVGeneral.objects.all()
-    context = {
-        'cv_general_list': all_cv_list
-    }
-    return render(request, 'resumebuilder/index.html', context)
 
 
 def cv_view(request, cv_id):
@@ -38,3 +41,10 @@ def cv_view(request, cv_id):
         'entrygroupdict': entrygroupdict,
     }
     return render(request, 'resumebuilder/details.html', context)
+
+
+def modify_cv(request, cv_id):
+    cv_general = get_object_or_404(CVGeneral, pk=cv_id)
+    cv_general.name = request.POST['cv_name']
+    cv_general.save()
+    return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_general.id,)))
