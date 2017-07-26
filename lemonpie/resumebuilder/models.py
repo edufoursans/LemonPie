@@ -25,7 +25,8 @@ class CVEntry(PolymorphicModel):
     name = models.CharField(max_length=30)
 
 class GroupEntry(CVEntry):
-    pass
+    def get_list_head(self):
+        return GroupEntryLinkedList.objects.filter(group_entry__id=self.id, predecessor__isnull=True).first()
 
 class ActivityEntry(CVEntry):
     location_city = models.CharField(blank=True, max_length=50)

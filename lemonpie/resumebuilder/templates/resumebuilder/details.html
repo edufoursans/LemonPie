@@ -1,9 +1,9 @@
 {% if cv_general %}
 <h1> {{cv_general.name}} </h1> by {{cv_general.user}} </br>
-{% for group_entry in group_entries %}
-      Group : {{ group_entry.group_entry.id }} </br>
-      {% for entrygrouppair in entrygrouppairing %}
-      CV Entry : {{ entrygrouplist.element.family_name }} </br>
+{% for key, list in entrygroupdict.items %}
+      Group : {{ key.id }} </br>
+      {% for entry in list %}
+        Element: {{ entry.name }} </br>
       {% endfor %}
 {% endfor %}
 {% endif %}
