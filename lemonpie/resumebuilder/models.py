@@ -14,7 +14,7 @@ COLUMN_CHOICES = (
 
 ## Defining structural components for CV
 class CVGeneral(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     nb_columns = models.PositiveIntegerField(
       choices=COLUMN_CHOICES

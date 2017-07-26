@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -45,6 +46,22 @@ def cv_view(request, cv_id):
 
 def modify_cv(request, cv_id):
     cv_general = get_object_or_404(CVGeneral, pk=cv_id)
-    cv_general.name = request.POST['cv_name']
+    name = request.POST['cv_name']
+    if name != "":
+        cv_general.name = name
+    cv_general.nb_columns = request.POST['nb_cols']
     cv_general.save()
     return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_general.id,)))
+
+def add_new_cv(request):
+    current_user = get_object_or_404(User, pk=1)
+    cv_general = CVGeneral(nb_columns=1, user = current_user)
+    cv_general.save()
+    cv_general.name = "CV_" + str(cv_general.id)
+    cv_general.save()
+    return cv_view(request, cv_general.id)
+
+def delete_cv(request, cv_id):
+    cv_general = get_object_or_404(CVGeneral, pk=cv_id)
+    cv_general.delete()
+    return HttpResponseRedirect(reverse('resumebuilder:index', args=()))

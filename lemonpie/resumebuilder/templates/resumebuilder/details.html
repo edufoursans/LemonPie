@@ -15,6 +15,20 @@
 
 <form action="{% url 'resumebuilder:modify_cv' cv_general.id %}" method="post">
 {% csrf_token %}
-<input type="text" name="cv_name" value="{{ cv_general.name }}" />
+ <label>Name of CV</label>
+<input type="text" name="cv_name" value="{{ cv_general.name }}" /> </br>
+<label>Number of columns</label>
+{% if cv_general.nb_columns == 1 %}
+<input type="radio" name="nb_cols" value="1" checked> 1
+<input type="radio" name="nb_cols" value="2"> 2<br>
+{% else %}
+<input type="radio" name="nb_cols" value="1"> 1
+<input type="radio" name="nb_cols" value="2" checked> 2<br>
+{% endif %}
 <input type="submit" value="Modify" />
+</form>
+
+<form action="{% url 'resumebuilder:delete_cv' cv_general.id %}" method="post">
+{% csrf_token %}
+  <input type = "submit" value="Delete" />
 </form>

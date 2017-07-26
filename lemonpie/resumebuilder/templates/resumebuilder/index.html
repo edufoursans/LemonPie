@@ -9,3 +9,8 @@
 {% else %}
     <p>No CVs are available.</p>
 {% endif %}
+
+<form action="{% url 'resumebuilder:add_new_cv' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Add" />
+</form>
