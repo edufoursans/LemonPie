@@ -23,6 +23,8 @@ class CVGeneral(models.Model):
 ## Defining all-types of entries
 class CVEntry(PolymorphicModel):
     name = models.CharField(max_length=30)
+    def get_class_name(self):
+        return self.__class__.__name__
 
 class GroupEntry(CVEntry):
     def get_list_head(self):

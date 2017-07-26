@@ -58,7 +58,9 @@ ROOT_URLCONF = 'lemonpie.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'resumebuilder/templates/resumebuilder',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
