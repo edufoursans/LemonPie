@@ -2,16 +2,7 @@
 
 {% if cv_general %}
 <h1> {{cv_general.name}} </h1> by {{cv_general.user}} </br>
-{% for key, list in entrygroupdict.items %}
-      <h2> Group : {{ key.name }} </h2>
-      {% for entry in list %}
-        <div class={{entry.get_class_name}}>
-          <h3> {{entry.get_class_name}} </h3>
-              {{ entry|return_template }}
-        </div>
-      {% endfor %}
-{% endfor %}
-{% endif %}
+
 
 <form action="{% url 'resumebuilder:modify_cv' cv_general.id %}" method="post">
 {% csrf_token %}
@@ -25,10 +16,30 @@
 <input type="radio" name="nb_cols" value="1"> 1
 <input type="radio" name="nb_cols" value="2" checked> 2<br>
 {% endif %}
+
 <input type="submit" value="Modify" />
 </form>
 
 <form action="{% url 'resumebuilder:delete_cv' cv_general.id %}" method="post">
 {% csrf_token %}
   <input type = "submit" value="Delete" />
+</form>
+{% endif %}
+
+{% for key, list in entrygroupdict.items %}
+      <h2> Group : {{ key.name }} </h2>
+      {% for entry in list %}
+        <div class={{entry.get_class_name}}>
+          <h3> {{entry.get_class_name}} </h3>
+              {{ entry|return_template }}
+        </div>
+      {% endfor %}
+      <form action="{% url 'resumebuilder:delete_group' cv_general.id key.id %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete this Group" />
+      </form>
+{% endfor %}
+<form action="{% url 'resumebuilder:add_new_group' cv_general.id %}" method="post">
+  {% csrf_token %}
+  <input type="submit" value="Add Group" />
 </form>
