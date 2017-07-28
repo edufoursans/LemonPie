@@ -70,7 +70,7 @@ def add_new_cv(request):
 def delete_cv(request, cv_id):
     cv_general = get_object_or_404(CVGeneral, pk=cv_id)
     cv_general.delete()
-    return HttpResponseRedirect(reverse('resumebuilder:index', args=()))
+    return HttpResponseRedirect(reverse('resumebuilder:all_cvs', args=()))
 
 def group_view(request, group_id):
     group_entry = get_object_or_404(GroupEntry, pk=group_id)
@@ -102,3 +102,8 @@ def add_new_group(request):
     group_entry.name = "Group_Entry_" + str(group_entry.id)
     group_entry.save()
     return group_view(request, group_entry.id)
+
+def delete_group(request, group_id):
+    group_entry = get_object_or_404(GroupEntry, pk=group_id)
+    group_entry.delete()
+    return HttpResponseRedirect(reverse('resumebuilder:all_groups', args=()))

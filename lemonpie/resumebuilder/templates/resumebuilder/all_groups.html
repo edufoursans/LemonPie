@@ -4,6 +4,10 @@
     <ul>
     {% for group_entry in group_entry_list %}
       <li><a href="{% url 'resumebuilder:group_view' group_entry.id %}">{{ group_entry.name }}</a></li>
+      <form action="{% url 'resumebuilder:delete_group' group_entry.id %}" method="post">
+      {% csrf_token %}
+      <input type="submit" value="Delete group" />
+      </form>
     {% endfor %}
     </ul>
 {% else %}
