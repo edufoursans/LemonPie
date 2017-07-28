@@ -23,6 +23,7 @@ class CVGeneral(models.Model):
 ## Defining all-types of entries
 class CVEntry(PolymorphicModel):
     name = models.CharField(max_length=30)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     def get_class_name(self):
         return self.__class__.__name__
 
