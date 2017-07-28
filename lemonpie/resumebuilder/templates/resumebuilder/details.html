@@ -27,8 +27,7 @@
 {% endif %}
 
 {% for key, list in entrygroupdict.items %}
-      <h2> Group : {{ key.name }} </h2>
-      {{ key|return_group_template }}
+      {% return_group_template key False %}
       <form action="{% url 'resumebuilder:delete_group_from_cv' cv_general.id key.id %}" method="post">
         {% csrf_token %}
         <input type="submit" value="Delete this Group" />

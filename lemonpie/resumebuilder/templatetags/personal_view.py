@@ -5,7 +5,7 @@ from ..views import list_of_entries_for_group
 
 register = template.Library()
 
-@register.filter
+@register.simple_tag
 def return_template(cv_entry):
     template = 'personal_entry.html'
     context = {
@@ -19,11 +19,12 @@ def return_template(cv_entry):
     #render the template
     return render_to_string(template, context)
 
-@register.filter
-def return_group_template(group_entry):
+@register.simple_tag
+def return_group_template(group_entry, enable_modification):
     template = 'group_entry.html'
     context = {
         'group_entry':group_entry,
-        'cv_entries':list_of_entries_for_group(group_entry)
+        'cv_entries':list_of_entries_for_group(group_entry),
+        'enable_modification':enable_modification,
     }
     return render_to_string(template, context)

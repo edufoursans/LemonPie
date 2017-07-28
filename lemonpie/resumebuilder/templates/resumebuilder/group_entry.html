@@ -1,9 +1,16 @@
 {% load personal_view %}
-<h2> {{ cv_group.name }} </h2>
+<h2> {{ group_entry.name }} </h2>
 
 {% for entry in cv_entries %}
         <div class={{entry.get_class_name}}>
           <h3> {{entry.get_class_name}} </h3>
-              {{ entry|return_template }}
+              {% return_template entry %}
         </div>
 {% endfor %}
+
+{% if enable_modification %}
+<form action="{% url 'resumebuilder:all_groups' %}" method="">
+{% csrf_token %}
+<input type="submit" value="Go back to group list" />
+</form>
+{% endif %}

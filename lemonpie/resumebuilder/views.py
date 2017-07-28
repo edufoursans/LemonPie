@@ -20,7 +20,7 @@ class AllGroupsView(generic.ListView):
     context_object_name = 'group_entry_list'
 
     def get_queryset(self):
-        return GroupEntry.objects.all()
+        return GroupEntry.objects.filter()
 
 def list_of_entries_for_group(group_entry):
     head_of_group = group_entry.get_list_head()
@@ -61,7 +61,7 @@ def modify_cv(request, cv_id):
 
 def add_new_cv(request):
     current_user = get_object_or_404(User, pk=1)
-    cv_general = CVGeneral(nb_columns=1, user = current_user)
+    cv_general = CVGeneral(nb_columns=1, user=current_user)
     cv_general.save()
     cv_general.name = "CV_" + str(cv_general.id)
     cv_general.save()
@@ -77,6 +77,7 @@ def group_view(request, group_id):
     context = {
         'group_entry': group_entry,
         'cv_entries': list_of_entries_for_group(group_entry),
+        'enable_modification':True,
     }
     return render(request, 'resumebuilder/group_entry.html', context)
 
@@ -96,8 +97,12 @@ def delete_group_from_cv(request, cv_id, group_id):
     cv_group_pairing.delete()
     return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_id,)))
 
+def modify_group(request, group_id):
+    return group_view(request, group_id)
+
 def add_new_group(request):
-    group_entry = GroupEntry()
+    current_user = get_object_or_404(User, pk=1)
+    group_entry = GroupEntry(user=current_user)
     group_entry.save()
     group_entry.name = "Group_Entry_" + str(group_entry.id)
     group_entry.save()
