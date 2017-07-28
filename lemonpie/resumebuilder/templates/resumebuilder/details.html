@@ -28,18 +28,13 @@
 
 {% for key, list in entrygroupdict.items %}
       <h2> Group : {{ key.name }} </h2>
-      {% for entry in list %}
-        <div class={{entry.get_class_name}}>
-          <h3> {{entry.get_class_name}} </h3>
-              {{ entry|return_template }}
-        </div>
-      {% endfor %}
+      {{ key|return_group_template }}
       <form action="{% url 'resumebuilder:delete_group' cv_general.id key.id %}" method="post">
         {% csrf_token %}
         <input type="submit" value="Delete this Group" />
       </form>
 {% endfor %}
-<form action="{% url 'resumebuilder:add_new_group' cv_general.id %}" method="post">
+<form action="{% url 'resumebuilder:add_group_cv' cv_general.id %}" method="post">
   {% csrf_token %}
   <input type="submit" value="Add Group" />
 </form>

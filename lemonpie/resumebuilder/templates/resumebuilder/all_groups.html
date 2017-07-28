@@ -1,0 +1,16 @@
+<h1> List of All Groups </h1>
+
+{% if group_entry_list %}
+    <ul>
+    {% for group_entry in group_entry_list %}
+      <li><a href="{% url 'resumebuilder:group_view' group_entry.id %}">{{ group_entry.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Groups are available.</p>
+{% endif %}
+
+<form action="{% url 'resumebuilder:add_new_group' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Add" />
+</form>

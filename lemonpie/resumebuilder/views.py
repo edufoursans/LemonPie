@@ -8,13 +8,19 @@ from .models import CVGeneral, GroupEntry
 from .models import CVGeneralGroupEntryPairing
 
 
-class IndexView(generic.ListView):
-    template_name = 'resumebuilder/index.html'
+class AllCVsView(generic.ListView):
+    template_name = 'resumebuilder/all_cvs.html'
     context_object_name = 'cv_general_list'
 
     def get_queryset(self):
         return CVGeneral.objects.all()
 
+class AllGroupsView(generic.ListView):
+    template_name = 'resumebuilder/all_groups.html'
+    context_object_name = 'group_entry_list'
+
+    def get_queryset(self):
+        return GroupEntry.objects.all()
 
 def list_of_entries_for_group(group_entry):
     head_of_group = group_entry.get_list_head()
@@ -66,7 +72,15 @@ def delete_cv(request, cv_id):
     cv_general.delete()
     return HttpResponseRedirect(reverse('resumebuilder:index', args=()))
 
-def add_new_group(request, cv_id):
+def group_view(request, group_id):
+    group_entry = get_object_or_404(GroupEntry, pk=group_id)
+    context = {
+        'group_entry': group_entry,
+        'cv_entries': list_of_entries_for_group(group_entry),
+    }
+    return render(request, 'resumebuilder/group_entry.html', context)
+
+def add_group_cv(request, cv_id):
     cv_general = get_object_or_404(CVGeneral, pk=cv_id)
     new_group = GroupEntry()
     new_group.save()
@@ -76,7 +90,15 @@ def add_new_group(request, cv_id):
     cvgrouppairing.save()
     return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_general.id,)))
 
-def delete_group(request, cv_id, group_id):
-    group_entry = get_object_or_404(GroupEntry, pk=group_id)
-    group_entry.delete()
+def delete_group_from_cv(request, cv_id, group_id):
+    cv_group_pairing = CVGeneralGroupEntryPairing.objects.filter(
+        cv_general__id=cv_id, group_entry__id=group_id).first()
+    cv_group_pairing.delete()
     return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_id,)))
+
+def add_new_group(request):
+    group_entry = GroupEntry()
+    group_entry.save()
+    group_entry.name = "Group_Entry_" + str(group_entry.id)
+    group_entry.save()
+    return group_view(request, group_entry.id)
