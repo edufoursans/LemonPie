@@ -98,7 +98,12 @@ def delete_group_from_cv(request, cv_id, group_id):
     return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_id,)))
 
 def modify_group(request, group_id):
-    return group_view(request, group_id)
+    group_entry = get_object_or_404(GroupEntry, pk=group_id)
+    name = request.POST['group_name']
+    if name != "":
+        group_entry.name = name
+        group_entry.save()
+    return HttpResponseRedirect(reverse('resumebuilder:group_view', args=(group_id,)))
 
 def add_new_group(request):
     current_user = get_object_or_404(User, pk=1)
