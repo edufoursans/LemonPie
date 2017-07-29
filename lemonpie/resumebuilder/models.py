@@ -21,18 +21,22 @@ class CVGeneral(models.Model):
       choices=COLUMN_CHOICES
     )
 
-    #TODO: Unable duplication of groups within CV
     def get_possible_groups(self):
         groups_in_cv_id = [pair.group_entry.id for  \
         pair in CVGeneralGroupEntryPairing.objects.filter(cv_general__id = self.id)]
         return GroupEntry.objects.filter(user__id=self.user.id).exclude(id__in=groups_in_cv_id)
 
     def add_group(self, group_entry):
-        new_pairing = CVGeneralGroupEntryPairing(
+        all_pairs = CVGeneralGroupEntryPairing.objects.filter(
             group_entry=group_entry,
-            cv_general=self,
+            cv_general=self
         )
-        new_pairing.save()
+        if not all_pairs:
+            new_pairing = CVGeneralGroupEntryPairing(
+                group_entry=group_entry,
+                cv_general=self,
+            )
+            new_pairing.save()
 
 
 ## Defining all-types of entries
@@ -67,7 +71,6 @@ class GroupEntry(CVEntry):
             return self.__class__.__name__
 
     #TODO: Add unit test for this method
-    #TODO: Delete entries that are already attached to the group
     def get_possible_entries(self):
         type = self.get_group_type_str()
 
@@ -87,7 +90,7 @@ class GroupEntry(CVEntry):
         entries_matched = [list_element.cv_entry.id for list_element in \
         GroupEntryLinkedList.objects.filter(group_entry__id=self.id)]
         print(entries_matched)
-        return possible_entries.exclude(id__in = entries_matched)
+        return possible_entries.exclude(id__in=entries_matched)
 
     #TODO: Add unit test for this method
     def add_entry(self, cv_entry):
