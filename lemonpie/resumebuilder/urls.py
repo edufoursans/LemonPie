@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^resumes/(?P<cv_id>[0-9]+)/modify/$', views.modify_cv, name='modify_cv'),
     url(r'^resumes/(?P<cv_id>[0-9]+)/delete/$', views.delete_cv, name='delete_cv'),
     url(r'^resumes/(?P<cv_id>[0-9]+)/add_group/$', views.add_group_to_cv, name='add_group_to_cv'),
-    url(r'^resumes/(?P<cv_id>[0-9]+)/delete_group/(?P<group_id>[0-9]+)/$', views.delete_group_from_cv, name='delete_group_from_cv'),
+    url(r'^resumes/delete_group/(?P<cvgrouppair_id>[0-9]+)/$', views.delete_group_from_cv, name='delete_group_from_cv'),
 
     url(r'^entries/$', views.AllEntrysView.as_view(), name='all_entrys'),
     url(r'^entries/add/$', views.add_new_entry, name='add_new_entry'),

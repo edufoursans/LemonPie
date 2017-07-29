@@ -21,6 +21,18 @@ class CVGeneral(models.Model):
       choices=COLUMN_CHOICES
     )
 
+    #TODO: Unable duplication of groups within CV
+    def get_possible_groups(self):
+        return GroupEntry.objects.filter(user__id=self.user.id)
+
+    def add_group(self, group_entry):
+        new_pairing = CVGeneralGroupEntryPairing(
+            group_entry=group_entry,
+            cv_general=self,
+        )
+        new_pairing.save()
+
+
 
 ## Defining all-types of entries
 class CVEntry(PolymorphicModel):
@@ -28,11 +40,6 @@ class CVEntry(PolymorphicModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     def get_class_name(self):
         return self.__class__.__name__
-
-    def add_group(self, group_entry):
-        CVGeneralGroupEntryPairing(
-
-        )
 
 
 class GroupEntry(CVEntry):

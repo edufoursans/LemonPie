@@ -26,14 +26,22 @@
 </form>
 {% endif %}
 
-{% for key, list in entrygroupdict.items %}
-      {% return_group_template key False %}
-      <form action="{% url 'resumebuilder:delete_group_from_cv' cv_general.id key.id %}" method="post">
+{% for cvgrouppairing in cv_group_pairings %}
+      {% return_group_template cvgrouppairing.group_entry False %}
+      <form action="{% url 'resumebuilder:delete_group_from_cv' cvgrouppairing.id %}" method="post">
         {% csrf_token %}
         <input type="submit" value="Delete this Group" />
       </form>
 {% endfor %}
+
 <form action="{% url 'resumebuilder:add_group_to_cv' cv_general.id %}" method="post">
   {% csrf_token %}
-  <input type="submit" value="Add Group" />
-</form>
+   <label>Group to add</label>
+   <select name="group_id">
+     {% for group_entry in cv_general.get_possible_groups %}
+     <option value="{{group_entry.id}}">{{group_entry.name}}</option>
+     {% endfor %}
+   </select>
+   <br><br>
+  <input type="submit" value="Add group to CV" />
+  </form>

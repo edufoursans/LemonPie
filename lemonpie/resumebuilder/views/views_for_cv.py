@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from ..models import CVGeneral, GroupEntry
+from ..models import CVGeneral, GroupEntry, CVGeneralGroupEntryPairing
 from .views_for_group import list_of_entries_for_group
 
 
@@ -18,16 +18,11 @@ class AllCVsView(generic.ListView):
 
 def cv_view(request, cv_id):
     cv_general = get_object_or_404(CVGeneral, pk=cv_id)
-    cvgrouppairing = CVGeneralGroupEntryPairing.objects.filter(
+    cv_group_pairings = CVGeneralGroupEntryPairing.objects.filter(
         cv_general__id=cv_id)
-    group_entries = [cvgroup.group_entry for cvgroup in cvgrouppairing]
-    entrygroupdict = {}
-    for group_entry in group_entries:
-        entrygroupdict[group_entry] = list_of_entries_for_group(group_entry)
     context = {
         'cv_general': cv_general,
-        'group_entries': group_entries,
-        'entrygroupdict': entrygroupdict,
+        'cv_group_pairings': cv_group_pairings,
     }
     return render(request, 'resumebuilder/details.html', context)
 
@@ -60,14 +55,13 @@ def delete_cv(request, cv_id):
 
 def add_group_to_cv(request, cv_id):
     cv_general = get_object_or_404(CVGeneral, pk=cv_id)
-    group_id = request.post['group_id']
+    group_id = request.POST['group_id']
     group_entry = get_object_or_404(GroupEntry, pk=group_id)
     cv_general.add_group(group_entry)
     return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_general.id,)))
 
 
-def delete_group_from_cv(request, cv_id, group_id):
-    cv_general = get_object_or_404(CVGeneral, pk=cv_id)
-    group_entry = get_object_or_404(GroupEntry, pk=group_id)
-    cv_general.delete_group(group_entry)
-    return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_id,)))
+def delete_group_from_cv(request, cvgrouppair_id):
+    cvgrouppair = get_object_or_404(CVGeneralGroupEntryPairing, pk=cvgrouppair_id)
+    cvgrouppair.delete()
+    return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cvgrouppair.cv_general.id,)))
