@@ -23,7 +23,9 @@ class CVGeneral(models.Model):
 
     #TODO: Unable duplication of groups within CV
     def get_possible_groups(self):
-        return GroupEntry.objects.filter(user__id=self.user.id)
+        groups_in_cv_id = [pair.group_entry.id for  \
+        pair in CVGeneralGroupEntryPairing.objects.filter(cv_general__id = self.id)]
+        return GroupEntry.objects.filter(user__id=self.user.id).exclude(id__in=groups_in_cv_id)
 
     def add_group(self, group_entry):
         new_pairing = CVGeneralGroupEntryPairing(
@@ -68,18 +70,24 @@ class GroupEntry(CVEntry):
     #TODO: Delete entries that are already attached to the group
     def get_possible_entries(self):
         type = self.get_group_type_str()
+
         if (type == "HobbyEntry"):
-            return CVEntry.objects.instance_of(HobbyEntry)
+            possible_entries = CVEntry.objects.instance_of(HobbyEntry)
         if (type == "WorkEntry"):
-            return CVEntry.objects.instance_of(WorkEntry)
+            possible_entries = CVEntry.objects.instance_of(WorkEntry)
         if (type == "EducationEntry"):
-            return CVEntry.objects.instance_of(EducationEntry)
+            possible_entries = CVEntry.objects.instance_of(EducationEntry)
         if (type == "SkillEntry"):
-            return CVEntry.objects.instance_of(SkillEntry)
+            possible_entries = CVEntry.objects.instance_of(SkillEntry)
         if (type == "PersonalEntry"):
-            return CVEntry.objects.instance_of(PersonalEntry)
+            possible_entries = CVEntry.objects.instance_of(PersonalEntry)
         else:
-            return CVEntry.objects.not_instance_of(GroupEntry)
+            possible_entries = CVEntry.objects.not_instance_of(GroupEntry)
+
+        entries_matched = [list_element.cv_entry.id for list_element in \
+        GroupEntryLinkedList.objects.filter(group_entry__id=self.id)]
+        print(entries_matched)
+        return possible_entries.exclude(id__in = entries_matched)
 
     #TODO: Add unit test for this method
     def add_entry(self, cv_entry):

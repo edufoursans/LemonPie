@@ -34,6 +34,7 @@
       </form>
 {% endfor %}
 
+{% if cv_general.get_possible_groups %}
 <form action="{% url 'resumebuilder:add_group_to_cv' cv_general.id %}" method="post">
   {% csrf_token %}
    <label>Group to add</label>
@@ -45,3 +46,4 @@
    <br><br>
   <input type="submit" value="Add group to CV" />
   </form>
+{% endif %}
