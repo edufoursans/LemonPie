@@ -1,0 +1,16 @@
+<h1> List of All CVs </h1>
+
+{% if cv_general_list %}
+    <ul>
+    {% for cv_general in cv_general_list %}
+        <li><a href="{% url 'resumebuilder:cv_view' cv_general.id %}">{{ cv_general.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No CVs are available.</p>
+{% endif %}
+
+<form action="{% url 'resumebuilder:add_new_cv' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Add" />
+</form>

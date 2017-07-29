@@ -1,0 +1,19 @@
+{% load personal_view %}
+
+<div class={{cv_entry.get_class_name}}>
+  <h3> {{cv_entry.get_class_name}} - {{cv_entry.name}} - {{cv_entry.id}} </h3>
+      {% return_template cv_entry enable_modification form %}
+</div>
+
+{% if enable_modification %}
+<form action="{% url 'resumebuilder:all_entrys' %}" method="">
+{% csrf_token %}
+<input type="submit" value="Go back to entry list" />
+</form>
+
+<form action="{% url 'resumebuilder:modify_entry' cv_entry.id %}" method="">
+  {% csrf_token %}
+  <input type="submit" value="Modify" />
+</form>
+
+{% endif %}

@@ -1,0 +1,46 @@
+{% load personal_view %}
+<h2> {{ group_entry.name }} - {{ group_entry.get_group_type_str }} </h2>
+
+{% if enable_modification %}
+<form action="{% url 'resumebuilder:modify_group' group_entry.id %}" method="post">
+{% csrf_token %}
+ <label>Name of Group</label>
+<input type="text" name="group_name" value="{{ group_entry.name }}" /> </br>
+<input type="submit" value="Modify" />
+</form>
+
+{% if group_entry.get_possible_entries %}
+<form action="{% url 'resumebuilder:add_entry_to_group' group_entry.id %}" method="post">
+  {% csrf_token %}
+   <label>Entry to add</label>
+   <select name="entry_id">
+     {% for cv_entry in group_entry.get_possible_entries %}
+     <option value="{{cv_entry.id}}">{{cv_entry.name}}</option>
+     {% endfor %}
+   </select>
+   <br><br>
+  <input type="submit" value="Add entry to group" />
+  </form>
+  {% endif %}
+
+{% endif %}
+
+{% for entry_list_element in cv_entries %}
+        <div class={{entry.get_class_name}}>
+          <h3> {{entry_list_element.cv_entry.get_class_name}} </h3>
+              {% return_template entry_list_element.cv_entry False None %}
+        </div>
+        {% if enable_modification %}
+        <form action="{% url 'resumebuilder:delete_entry_from_group' entry_list_element.id %}" method="">
+        {% csrf_token %}
+        <input type="submit" value="Delete entry from this group" />
+        </form>
+        {% endif %}
+{% endfor %}
+
+{% if enable_modification %}
+<form action="{% url 'resumebuilder:all_groups' %}" method="">
+{% csrf_token %}
+<input type="submit" value="Go back to group list" />
+</form>
+{% endif %}
