@@ -4,13 +4,16 @@ from phonenumber_field.formfields import PhoneNumberField
 from django_countries import countries
 from django_countries.fields import LazyTypedChoiceField
 
-class SkillForm(forms.Form):
+class EntryForm(forms.Form):
     name = forms.CharField(max_length=50)
+
+
+class SkillForm(EntryForm):
     skill_name = forms.CharField(max_length=50)
     skill_level = forms.IntegerField(min_value=1, max_value=5)
 
 
-class PersonalForm(forms.Form):
+class PersonalForm(EntryForm):
     name = forms.CharField(max_length=50)
     family_name = forms.CharField(max_length=50)
     given_name = forms.CharField(max_length=50)
@@ -18,7 +21,8 @@ class PersonalForm(forms.Form):
     phone_number = PhoneNumberField()
     email_address = forms.EmailField()
 
-class ActivityForm(forms.Form):
+
+class ActivityForm(EntryForm):
     name = forms.CharField(max_length=50)
     location_city = forms.CharField(max_length=50)
     location_country = LazyTypedChoiceField(choices=countries)
@@ -26,6 +30,7 @@ class ActivityForm(forms.Form):
     date_begin = forms.DateField()
     date_end = forms.DateField()
     description = forms.CharField(widget=forms.Textarea)
+
 
 class WorkForm(ActivityForm):
     job_title = forms.CharField(max_length=50)

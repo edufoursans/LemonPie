@@ -14,7 +14,7 @@ from ..models import (
     SkillEntry,
 )
 
-from .view_for_form import (
+from .view_for_entry_form import (
     modify_personal,
     modify_skill,
     modify_job,

@@ -13,7 +13,6 @@ from ..forms import (
     HobbyForm,
 )
 
-
 def modify_skill(request, entry_id):
     cv_entry = get_object_or_404(CVEntry, pk=entry_id)
     # if this is a POST request we need to process the form data

@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from ..models import CVGeneral, CVGeneralGroupEntryPairing
+from ..models import CVGeneral, GroupEntry
 from .views_for_group import list_of_entries_for_group
 
 
@@ -56,3 +56,18 @@ def delete_cv(request, cv_id):
     cv_general = get_object_or_404(CVGeneral, pk=cv_id)
     cv_general.delete()
     return HttpResponseRedirect(reverse('resumebuilder:all_cvs', args=()))
+
+
+def add_group_to_cv(request, cv_id):
+    cv_general = get_object_or_404(CVGeneral, pk=cv_id)
+    group_id = request.post['group_id']
+    group_entry = get_object_or_404(GroupEntry, pk=group_id)
+    cv_general.add_group(group_entry)
+    return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_general.id,)))
+
+
+def delete_group_from_cv(request, cv_id, group_id):
+    cv_general = get_object_or_404(CVGeneral, pk=cv_id)
+    group_entry = get_object_or_404(GroupEntry, pk=group_id)
+    cv_general.delete_group(group_entry)
+    return HttpResponseRedirect(reverse('resumebuilder:cv_view', args=(cv_id,)))
