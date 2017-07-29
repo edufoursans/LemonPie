@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import CVGeneral, GroupEntry
+from .models import CVGeneral, GroupEntry, CVEntry
 from .models import CVGeneralGroupEntryPairing
 
 
@@ -21,6 +21,13 @@ class AllGroupsView(generic.ListView):
 
     def get_queryset(self):
         return GroupEntry.objects.filter()
+
+class AllEntrysView(generic.ListView):
+    template_name = 'resumebuilder/all_entrys.html'
+    context_object_name = 'cv_entry_list'
+
+    def get_queryset(self):
+        return CVEntry.objects.not_instance_of(GroupEntry)
 
 def list_of_entries_for_group(group_entry):
     head_of_group = group_entry.get_list_head()
@@ -117,3 +124,33 @@ def delete_group(request, group_id):
     group_entry = get_object_or_404(GroupEntry, pk=group_id)
     group_entry.delete()
     return HttpResponseRedirect(reverse('resumebuilder:all_groups', args=()))
+
+def entry_view(request, entry_id):
+    cv_entry = get_object_or_404(CVEntry, pk=entry_id)
+    context = {
+        'cv_entry':cv_entry,
+        'enable_modification':True,
+    }
+    return render(request, 'resumebuilder/cv_entry.html', context)
+
+def modify_entry(request, entry_id):
+    cv_entry = get_object_or_404(CVEntry, pk=entry_id)
+    name = request.POST['entry_name']
+    if name != "":
+        cv_entry.name = name
+        cv_entry.save()
+    return HttpResponseRedirect(reverse('resumebuilder:entry_view', args=(entry_id,)))
+
+def delete_entry(request, entry_id):
+    cv_entry = get_object_or_404(CVEntry, pk=entry_id)
+    #TODO: Implement deletion of element in every Group
+    cv_entry.delete()
+    return HttpResponseRedirect(reverse('resumebuilder:all_entrys', args=()))
+
+def add_new_entry(request):
+    current_user = get_object_or_404(User, pk=1)
+    cv_entry = CVEntry(user=current_user)
+    cv_entry.save()
+    cv_entry.name = "CV_Entry_" + str(cv_entry.id)
+    cv_entry.save()
+    return entry_view(request, cv_entry.id)

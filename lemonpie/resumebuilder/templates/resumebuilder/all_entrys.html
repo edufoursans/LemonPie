@@ -1,0 +1,20 @@
+<h1> List of All Entries </h1>
+
+{% if cv_entry_list %}
+    <ul>
+    {% for cv_entry in cv_entry_list %}
+      <li><a href="{% url 'resumebuilder:entry_view' cv_entry.id %}">{{ cv_entry.name }}</a></li>
+      <form action="{% url 'resumebuilder:delete_entry' cv_entry.id %}" method="post">
+      {% csrf_token %}
+      <input type="submit" value="Delete Entry" />
+      </form>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Entries are available.</p>
+{% endif %}
+
+<form action="{% url 'resumebuilder:add_new_entry' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Add" />
+</form>
