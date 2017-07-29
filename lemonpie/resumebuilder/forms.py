@@ -30,3 +30,11 @@ class ActivityForm(forms.Form):
 class WorkForm(ActivityForm):
     job_title = forms.CharField(max_length=50)
     company_name = forms.CharField(max_length=50)
+
+class EducationForm(ActivityForm):
+    diploma_title = forms.CharField(max_length=50)
+    school_name = forms.CharField(max_length=50)
+
+class HobbyForm(ActivityForm):
+    hobby_name = forms.CharField(max_length=50)
+    hobby_institution = forms.CharField(max_length=50)

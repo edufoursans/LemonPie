@@ -14,7 +14,13 @@ from ..models import (
     SkillEntry,
 )
 
-from .view_for_form import modify_personal, modify_skill, modify_job
+from .view_for_form import (
+    modify_personal,
+    modify_skill,
+    modify_job,
+    modify_education,
+    modify_hobby,
+)
 
 
 class AllEntrysView(generic.ListView):
@@ -42,11 +48,12 @@ def modify_entry(request, entry_id):
         return modify_personal(request, entry_id)
     if cv_entry.get_class_name() == 'WorkEntry':
         return modify_job(request, entry_id)
+    if cv_entry.get_class_name() == 'EducationEntry':
+        return modify_education(request, entry_id)
+    if cv_entry.get_class_name() == 'HobbyEntry':
+        return modify_hobby(request, entry_id)
     else:
-        name = request.POST['entry_name']
-        if name != "":
-            cv_entry.name = name
-            cv_entry.save()
+        ValidationError(_('Invalid type value'), code='invalid')
         return HttpResponseRedirect(reverse('resumebuilder:entry_view', args=(entry_id,)))
 
 
