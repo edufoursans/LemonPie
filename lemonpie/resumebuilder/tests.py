@@ -357,8 +357,8 @@ class GroupEntryTests(TestCase):
         """
         group_entry = MockObjects.mock_group("Some_Group")
         hobby_entry = MockObjects.mock_hobby_entry('Somework')
-        work_entry_1 = MockObjects.mock_skill_entry('Somework')
-        work_entry_2 = MockObjects.mock_skill_entry('Somework')
+        work_entry_1 = MockObjects.mock_work_entry('Somework')
+        work_entry_2 = MockObjects.mock_work_entry('Somework')
         group_entry.save()
         work_entry_1.save()
         work_entry_2.save()
@@ -367,3 +367,99 @@ class GroupEntryTests(TestCase):
         possible_entries = group_entry.get_possible_entries()
         self.assertEqual(possible_entries.count(), 1)
         self.assertEqual(possible_entries.first(), work_entry_2)
+
+
+class DeleteOperationTests(TestCase):
+    def test_delete_group_when_attached_to_cv(self):
+        """
+        Testing delete method when group was paired with other cv_entrys
+        """
+        cv_1 = MockObjects.mock_cv("CV1")
+        cv_2 = MockObjects.mock_cv("CV2")
+        group_entry = MockObjects.mock_group("Group1")
+        cv_1.save()
+        cv_2.save()
+        group_entry.save()
+        cv_1.add_group(group_entry)
+        cv_2.add_group(group_entry)
+        cv_1.save()
+        cv_2.save()
+        group_entry.delete()
+        all_groups = GroupEntry.objects.filter(pk=group_entry.id)
+        self.assertEqual(all_groups.count(), 0)
+        all_cvs = CVGeneral.objects.filter()
+        self.assertEqual(all_cvs.count(), 2)
+        all_cv_group_pairings = CVGeneralGroupEntryPairing.objects.filter()
+        self.assertEqual(all_cv_group_pairings.count(), 0)
+
+    def test_delete_entry_when_last_of_group(self):
+        """
+        Testing delete method when entry is last of a group
+        """
+        group_entry = MockObjects.mock_group("Group")
+        work_entry_1 = MockObjects.mock_work_entry('Somework')
+        work_entry_2 = MockObjects.mock_work_entry('Somework')
+        group_entry.save()
+        work_entry_1.save()
+        work_entry_2.save()
+        group_entry.add_entry(work_entry_1)
+        group_entry.add_entry(work_entry_2)
+        work_entry_1.delete()
+        all_work_entries = WorkEntry.objects.filter()
+        self.assertEqual(all_work_entries.count(), 1)
+        self.assertEqual(
+            all_work_entries.first(), work_entry_2
+        )
+        list_head = group_entry.get_list_head()
+        self.assertEqual(list_head.cv_entry, work_entry_2)
+        self.assertEqual(list_head.predecessor, None)
+        self.assertEqual(list_head.successor, None)
+
+    def test_delete_entry_when_first_of_group(self):
+        """
+        Testing delete method when entry is first of a group
+        """
+        group_entry = MockObjects.mock_group("Group")
+        work_entry_1 = MockObjects.mock_work_entry('Somework')
+        work_entry_2 = MockObjects.mock_work_entry('Somework')
+        group_entry.save()
+        work_entry_1.save()
+        work_entry_2.save()
+        group_entry.add_entry(work_entry_1)
+        group_entry.add_entry(work_entry_2)
+        work_entry_2.delete()
+        all_work_entries = WorkEntry.objects.filter()
+        self.assertEqual(all_work_entries.count(), 1)
+        self.assertEqual(
+            all_work_entries.first(), work_entry_1
+        )
+        list_head = group_entry.get_list_head()
+        self.assertEqual(list_head.cv_entry, work_entry_1)
+        self.assertEqual(list_head.predecessor, None)
+        self.assertEqual(list_head.successor, None)
+
+    def test_delete_entry_whe_middle_of_group(self):
+        """
+        Testing delete method when entry is first of a group
+        """
+        group_entry = MockObjects.mock_group("Group")
+        work_entry_1 = MockObjects.mock_work_entry('Somework')
+        work_entry_2 = MockObjects.mock_work_entry('Somework')
+        work_entry_3 = MockObjects.mock_work_entry('Somework')
+        group_entry.save()
+        work_entry_1.save()
+        work_entry_2.save()
+        work_entry_3.save()
+        group_entry.add_entry(work_entry_1)
+        group_entry.add_entry(work_entry_2)
+        group_entry.add_entry(work_entry_3)
+        work_entry_2.delete()
+        all_work_entries = WorkEntry.objects.filter()
+        self.assertEqual(all_work_entries.count(), 2)
+        list_head = group_entry.get_list_head()
+        self.assertEqual(list_head.cv_entry, work_entry_3)
+        self.assertEqual(list_head.predecessor, None)
+        head2 = list_head.successor
+        self.assertEqual(head2.cv_entry, work_entry_1)
+        self.assertEqual(head2.successor, None)
+        self.assertEqual(head2.predecessor.cv_entry, work_entry_3)
