@@ -14,7 +14,7 @@ from ..models import (
     SkillEntry,
 )
 
-from .view_for_form import modify_personal, modify_skill
+from .view_for_form import modify_personal, modify_skill, modify_job
 
 
 class AllEntrysView(generic.ListView):
@@ -40,6 +40,8 @@ def modify_entry(request, entry_id):
         return modify_skill(request, entry_id)
     if cv_entry.get_class_name() == 'PersonalEntry':
         return modify_personal(request, entry_id)
+    if cv_entry.get_class_name() == 'WorkEntry':
+        return modify_job(request, entry_id)
     else:
         name = request.POST['entry_name']
         if name != "":
