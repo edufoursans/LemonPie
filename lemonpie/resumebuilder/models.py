@@ -33,7 +33,6 @@ class CVGeneral(models.Model):
         new_pairing.save()
 
 
-
 ## Defining all-types of entries
 class CVEntry(PolymorphicModel):
     name = models.CharField(max_length=30)
@@ -41,6 +40,11 @@ class CVEntry(PolymorphicModel):
     def get_class_name(self):
         return self.__class__.__name__
 
+    def delete(self):
+        all_list_elements = GroupEntryLinkedList.objects.filter(cv_entry__id = self.id)
+        for list_elm in all_list_elements:
+            list_elm.delete()
+        super(CVEntry, self).delete()
 
 class GroupEntry(CVEntry):
     def get_list_head(self):
@@ -159,7 +163,6 @@ class GroupEntryLinkedList(models.Model):
         CVEntry,
         on_delete=models.CASCADE,
         related_name='cv_entry',
-        null=True
     )
     group_entry = models.ForeignKey(
         GroupEntry,
