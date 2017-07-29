@@ -70,29 +70,33 @@ class GroupEntry(CVEntry):
         else:
             return self.__class__.__name__
 
-    #TODO: Add unit test for this method
+    def contains_entry(self, cv_entry):
+        group_entry_pairs = GroupEntryLinkedList.objects.filter(
+            group_entry__id=self.id,
+            cv_entry__id=cv_entry.id
+        )
+        return (group_entry_pairs.count() > 0)
+
     def get_possible_entries(self):
         type = self.get_group_type_str()
 
         if (type == "HobbyEntry"):
             possible_entries = CVEntry.objects.instance_of(HobbyEntry)
-        if (type == "WorkEntry"):
+        elif (type == "WorkEntry"):
             possible_entries = CVEntry.objects.instance_of(WorkEntry)
-        if (type == "EducationEntry"):
+        elif (type == "EducationEntry"):
             possible_entries = CVEntry.objects.instance_of(EducationEntry)
-        if (type == "SkillEntry"):
+        elif (type == "SkillEntry"):
             possible_entries = CVEntry.objects.instance_of(SkillEntry)
-        if (type == "PersonalEntry"):
+        elif (type == "PersonalEntry"):
             possible_entries = CVEntry.objects.instance_of(PersonalEntry)
         else:
             possible_entries = CVEntry.objects.not_instance_of(GroupEntry)
 
         entries_matched = [list_element.cv_entry.id for list_element in \
         GroupEntryLinkedList.objects.filter(group_entry__id=self.id)]
-        print(entries_matched)
         return possible_entries.exclude(id__in=entries_matched)
 
-    #TODO: Add unit test for this method
     def add_entry(self, cv_entry):
         list_head = self.get_list_head()
         if list_head is None:
@@ -104,15 +108,17 @@ class GroupEntry(CVEntry):
             )
             new_group_entry_list.save()
         else:
-            new_group_entry_list = GroupEntryLinkedList(
-                cv_entry=cv_entry,
-                group_entry=self,
-                successor=list_head,
-                predecessor=None
-            )
-            new_group_entry_list.save()
-            list_head.predecessor = new_group_entry_list
-            list_head.save()
+            if not self.contains_entry(cv_entry) and  \
+            self.get_group_type_str() == cv_entry.get_class_name():
+                new_group_entry_list = GroupEntryLinkedList(
+                    cv_entry=cv_entry,
+                    group_entry=self,
+                    successor=list_head,
+                    predecessor=None
+                    )
+                new_group_entry_list.save()
+                list_head.predecessor = new_group_entry_list
+                list_head.save()
 
 
 
