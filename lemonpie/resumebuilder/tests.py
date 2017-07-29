@@ -51,7 +51,7 @@ class CVGeneralTest(TestCase):
         """
         Testing get_possible_groups when no groups are attached to CV
         """
-        cv_general = CVGeneral(name="SomeCV",nb_columns=1, user=User(id=1))
+        cv_general = CVGeneral(name="SomeCV", nb_columns=1, user=User(id=1))
         group_entry_1 = GroupEntry(name="SomeGroupEntry", user=User(id=1))
         group_entry_2 = GroupEntry(name="SomeOtherGroupEntry", user=User(id=1))
         cv_general.save()
@@ -61,5 +61,44 @@ class CVGeneralTest(TestCase):
         self.assertQuerysetEqual(
             possible_groups,
             ['<GroupEntry: GroupEntry object>', '<GroupEntry: GroupEntry object>'],
+            ordered=False
+        )
+
+    def test_get_possible_groups_one(self):
+        """
+        Testing get_possible_groups when one group is attached to CV
+        """
+        cv_general = CVGeneral(name="SomeCV", nb_columns=1, user=User(id=1))
+        group_entry_1 = GroupEntry(name="SomeGroupEntry", user=User(id=1))
+        group_entry_2 = GroupEntry(name="SomeOtherGroupEntry", user=User(id=1))
+        cv_general.save()
+        group_entry_1.save()
+        group_entry_2.save()
+        cv_general.add_group(group_entry_1)
+        possible_groups = cv_general.get_possible_groups()
+        self.assertQuerysetEqual(
+            possible_groups,
+            ['<GroupEntry: GroupEntry object>'],
+            ordered=False
+        )
+        possible_group = possible_groups.first()
+        self.assertEqual(group_entry_2, possible_group)
+
+    def test_get_possible_groups_none(self):
+        """
+        Testing get_possible_groups when all groups are attached to CV
+        """
+        cv_general = CVGeneral(name="SomeCV", nb_columns=1, user=User(id=1))
+        group_entry_1 = GroupEntry(name="SomeGroupEntry", user=User(id=1))
+        group_entry_2 = GroupEntry(name="SomeOtherGroupEntry", user=User(id=1))
+        cv_general.save()
+        group_entry_1.save()
+        group_entry_2.save()
+        cv_general.add_group(group_entry_1)
+        cv_general.add_group(group_entry_2)
+        possible_groups = cv_general.get_possible_groups()
+        self.assertQuerysetEqual(
+            possible_groups,
+            [],
             ordered=False
         )
