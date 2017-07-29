@@ -4,7 +4,16 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import CVGeneral, GroupEntry, CVEntry
+from .models import (
+    CVGeneral,
+    GroupEntry,
+    CVEntry,
+    WorkEntry,
+    PersonalEntry,
+    EducationEntry,
+    HobbyEntry,
+    SkillEntry
+)
 from .models import CVGeneralGroupEntryPairing
 
 
@@ -149,8 +158,20 @@ def delete_entry(request, entry_id):
 
 def add_new_entry(request):
     current_user = get_object_or_404(User, pk=1)
-    cv_entry = CVEntry(user=current_user)
+    entry_type = request.POST['entry_type']
+    if entry_type == 'PersonalEntry':
+        cv_entry = PersonalEntry(user=current_user)
+    elif entry_type == 'WorkEntry':
+        cv_entry = WorkEntry(user=current_user)
+    elif entry_type == 'EducationEntry':
+        cv_entry = EducationEntry(user=current_user)
+    elif entry_type == 'SkillEntry':
+        cv_entry = SkillEntry(user=current_user)
+    elif entry_type == 'HobbyEntry':
+        cv_entry = HobbyEntry(user=current_user)
+    else:
+        ValidationError(_('Invalid type value'), code='invalid')
     cv_entry.save()
-    cv_entry.name = "CV_Entry_" + str(cv_entry.id)
+    cv_entry.name = cv_entry.get_class_name() + str(cv_entry.id)
     cv_entry.save()
     return entry_view(request, cv_entry.id)

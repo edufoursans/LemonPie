@@ -16,5 +16,13 @@
 
 <form action="{% url 'resumebuilder:add_new_entry' %}" method="post">
 {% csrf_token %}
+<select name="entry_type">
+  <option value="PersonalEntry">Personal Entry</option>
+  <option value="SkillEntry">Skill Entry</option>
+  <option value="WorkEntry">Work Entry</option>
+  <option value="EducationEntry">Education Entry</option>
+  <option value="HobbyEntry">Hobby Entry</option>
+</select>
+<br><br>
 <input type="submit" value="Add" />
 </form>

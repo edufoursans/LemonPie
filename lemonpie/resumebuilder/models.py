@@ -39,25 +39,25 @@ class GroupEntry(CVEntry):
             return self.__class__.__name__
 
 class ActivityEntry(CVEntry):
-    location_city = models.CharField(blank=True, max_length=50)
-    location_country = CountryField()
-    date_begin = models.DateField(blank=True)
-    date_end = models.DateField(blank=True, default=date.today)
-    description = models.TextField(blank=True)
+    location_city = models.CharField(null=True, blank=True, max_length=50)
+    location_country = CountryField(null=True)
+    date_begin = models.DateField(null=True, blank=True)
+    date_end = models.DateField(null=True, blank=True, default=date.today)
+    description = models.TextField(null=True, blank=True)
 
 class PersonalEntry(CVEntry):
-    family_name = models.CharField(max_length=50)
-    given_name = models.CharField(max_length=50)
-    phone_number = PhoneNumberField()
-    email_address = models.EmailField()
+    family_name = models.CharField(null=True, max_length=50)
+    given_name = models.CharField(null=True, max_length=50)
+    phone_number = PhoneNumberField(null=True)
+    email_address = models.EmailField(null=True)
 
 class WorkEntry(ActivityEntry):
-    job_title = models.CharField(max_length=50)
-    company_name = models.CharField(max_length=50)
+    job_title = models.CharField(null=True, max_length=50)
+    company_name = models.CharField(null=True, max_length=50)
 
 class EducationEntry(ActivityEntry):
-    diploma_title = models.CharField(max_length=50)
-    school_name = models.CharField(max_length=50)
+    diploma_title = models.CharField(null=True, max_length=50)
+    school_name = models.CharField(null=True, max_length=50)
 
 class SkillEntry(CVEntry):
     SKILL_LEVEL_CHOICES = (
@@ -67,14 +67,15 @@ class SkillEntry(CVEntry):
       (4, 4),
       (5, 5)
     )
-    skill_name = models.CharField(max_length=50)
+    skill_name = models.CharField(null=True, max_length=50)
     skill_level = models.PositiveIntegerField(
+      null=True,
       choices=SKILL_LEVEL_CHOICES
     )
 
 class HobbyEntry(ActivityEntry):
-    hobby_name = models.CharField(max_length=50)
-    hobby_institution = models.CharField(blank=True, max_length=50)
+    hobby_name = models.CharField(null=True, max_length=50)
+    hobby_institution = models.CharField(null=True, max_length=50)
 
 ##Defining relationships for entries
 class CVGeneralGroupEntryPairing(models.Model):
