@@ -36,7 +36,7 @@ def group_view(request, group_id):
     context = {
         'group_entry': group_entry,
         'cv_entries': list_of_entries_for_group(group_entry),
-        'enable_modification':True,
+        'enable_modification': True,
     }
     return render(request, 'resumebuilder/group_entry.html', context)
 

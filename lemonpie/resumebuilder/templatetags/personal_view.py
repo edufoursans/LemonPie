@@ -6,11 +6,12 @@ from ..views import list_of_entries_for_group
 register = template.Library()
 
 @register.simple_tag
-def return_template(cv_entry, enable_modification):
+def return_template(cv_entry, enable_modification, form):
     template = 'personal_entry.html'
     context = {
-        'cv_entry':cv_entry,
-        'enbale_modification':enable_modification,
+        'cv_entry': cv_entry,
+        'enable_modification': enable_modification,
+        'form': form,
     }
     #if statements that choose what 'template' should be
     if cv_entry.get_class_name() == 'PersonalEntry':

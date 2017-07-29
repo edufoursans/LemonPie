@@ -12,8 +12,8 @@ from ..models import (
     EducationEntry,
     HobbyEntry,
     SkillEntry,
-    CVGeneralGroupEntryPairing
 )
+from ..forms import SkillForm
 
 
 class AllEntrysView(generic.ListView):
@@ -27,24 +27,30 @@ class AllEntrysView(generic.ListView):
 def entry_view(request, entry_id):
     cv_entry = get_object_or_404(CVEntry, pk=entry_id)
     context = {
-        'cv_entry':cv_entry,
-        'enable_modification':True,
+        'cv_entry': cv_entry,
+        'enable_modification': True,
     }
     return render(request, 'resumebuilder/cv_entry.html', context)
 
+
 def modify_entry(request, entry_id):
     cv_entry = get_object_or_404(CVEntry, pk=entry_id)
-    name = request.POST['entry_name']
-    if name != "":
-        cv_entry.name = name
-        cv_entry.save()
-    return HttpResponseRedirect(reverse('resumebuilder:entry_view', args=(entry_id,)))
+    if cv_entry.get_class_name() == 'SkillEntry':
+        return modify_skill(request, entry_id)
+    else:
+        name = request.POST['entry_name']
+        if name != "":
+            cv_entry.name = name
+            cv_entry.save()
+        return HttpResponseRedirect(reverse('resumebuilder:entry_view', args=(entry_id,)))
+
 
 def delete_entry(request, entry_id):
     cv_entry = get_object_or_404(CVEntry, pk=entry_id)
     #TODO: Implement deletion of element in every Group
     cv_entry.delete()
     return HttpResponseRedirect(reverse('resumebuilder:all_entrys', args=()))
+
 
 def add_new_entry(request):
     current_user = get_object_or_404(User, pk=1)
@@ -65,3 +71,26 @@ def add_new_entry(request):
     cv_entry.name = cv_entry.get_class_name() + str(cv_entry.id)
     cv_entry.save()
     return entry_view(request, cv_entry.id)
+
+
+def modify_skill(request, entry_id):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = SkillForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse('resumebuilder:entry_view', args=(entry_id,)))
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SkillForm()
+        cv_entry = get_object_or_404(CVEntry, pk=entry_id)
+        context = {
+            'cv_entry': cv_entry,
+            'enable_modification': True,
+            'form': form,
+        }
+        return render(request, 'form.html', context)
