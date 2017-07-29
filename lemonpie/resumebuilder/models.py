@@ -31,6 +31,13 @@ class GroupEntry(CVEntry):
     def get_list_head(self):
         return GroupEntryLinkedList.objects.filter(group_entry__id=self.id, predecessor__isnull=True).first()
 
+    def get_group_type(self):
+        list_head = self.get_list_head()
+        if list_head is not None:
+            return list_head.cv_entry.get_class_name()
+        else:
+            return self.__class__.__name__
+
 class ActivityEntry(CVEntry):
     location_city = models.CharField(blank=True, max_length=50)
     location_country = CountryField()

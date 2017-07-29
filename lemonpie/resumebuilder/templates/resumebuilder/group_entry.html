@@ -1,5 +1,5 @@
 {% load personal_view %}
-<h2> {{ group_entry.name }} </h2>
+<h2> {{ group_entry.name }} - {{ group_entry.get_group_type }} </h2>
 
 {% if enable_modification %}
 <form action="{% url 'resumebuilder:modify_group' group_entry.id %}" method="post">
