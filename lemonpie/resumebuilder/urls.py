@@ -22,6 +22,6 @@ urlpatterns = [
     url(r'^entries/(?P<entry_id>[0-9]+)/modify/$', views.modify_entry, name='modify_entry'),
     url(r'^entries/(?P<entry_id>[0-9]+)/delete/$', views.delete_entry, name='delete_entry'),
 
-    url(r'^resumes/(?P<cv_id>[0-9]+)/add_group/$', views.add_group_cv, name='add_group_cv'),
+    url(r'^resumes/(?P<cv_id>[0-9]+)/add_group/$', views.add_group_to_cv, name='add_group_to_cv'),
     url(r'^resumes/(?P<cv_id>[0-9]+)/groups/(?P<group_id>[0-9]+)/delete_group/$', views.delete_group_from_cv, name='delete_group_from_cv'),
 ]

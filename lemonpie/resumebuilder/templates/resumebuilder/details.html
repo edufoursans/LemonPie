@@ -33,7 +33,7 @@
         <input type="submit" value="Delete this Group" />
       </form>
 {% endfor %}
-<form action="{% url 'resumebuilder:add_group_cv' cv_general.id %}" method="post">
+<form action="{% url 'resumebuilder:add_group_to_cv' cv_general.id %}" method="post">
   {% csrf_token %}
   <input type="submit" value="Add Group" />
 </form>

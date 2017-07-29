@@ -6,13 +6,6 @@
 </div>
 
 {% if enable_modification %}
-<form action="{% url 'resumebuilder:modify_entry' cv_entry.id %}" method="post">
-{% csrf_token %}
- <label>Name of Entry</label>
-<input type="text" name="entry_name" value="{{ cv_entry.name }}" /> </br>
-<input type="submit" value="Modify" />
-</form>
-
 <form action="{% url 'resumebuilder:all_entrys' %}" method="">
 {% csrf_token %}
 <input type="submit" value="Go back to entry list" />
