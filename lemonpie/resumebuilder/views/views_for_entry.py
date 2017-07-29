@@ -74,6 +74,7 @@ def add_new_entry(request):
 
 
 def modify_skill(request, entry_id):
+    cv_entry = get_object_or_404(CVEntry, pk=entry_id)
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -81,13 +82,14 @@ def modify_skill(request, entry_id):
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
-            # ...
+            cv_entry.skill_name = form.cleaned_data['skill_name']
+            cv_entry.skill_level = form.cleaned_data['skill_level']
+            cv_entry.save()
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('resumebuilder:entry_view', args=(entry_id,)))
     # if a GET (or any other method) we'll create a blank form
     else:
         form = SkillForm()
-        cv_entry = get_object_or_404(CVEntry, pk=entry_id)
         context = {
             'cv_entry': cv_entry,
             'enable_modification': True,
